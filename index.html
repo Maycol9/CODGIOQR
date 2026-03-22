@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mensaje de Amor</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(135deg, #ff9ec4, #ff6fa8, #ffd3e2);
+      color: #fff;
+    }
+
+    .hearts {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .heart {
+      position: absolute;
+      bottom: -30px;
+      color: rgba(255,255,255,0.75);
+      animation: floatUp linear infinite;
+      user-select: none;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(0.8) rotate(0deg);
+        opacity: 0;
+      }
+      15% { opacity: 1; }
+      100% {
+        transform: translateY(-120vh) scale(1.4) rotate(25deg);
+        opacity: 0;
+      }
+    }
+
+    .card {
+      position: relative;
+      width: min(92vw, 520px);
+      background: rgba(255, 255, 255, 0.16);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 28px;
+      padding: 32px 24px;
+      text-align: center;
+      box-shadow: 0 18px 45px rgba(0,0,0,0.18);
+      z-index: 2;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.2);
+      font-size: 14px;
+      margin-bottom: 18px;
+    }
+
+    h1, h2 {
+      margin: 0 0 14px;
+      line-height: 1.25;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+
+    h1 { font-size: clamp(28px, 5vw, 40px); }
+    h2 { font-size: clamp(24px, 4.5vw, 34px); }
+
+    p {
+      font-size: 18px;
+      line-height: 1.6;
+      margin: 0 0 22px;
+    }
+
+    .hidden { display: none; }
+
+    .arrow-btn, .choice-btn, .restart-btn {
+      border: none;
+      cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease, background .2s ease;
+      font-weight: bold;
+    }
+
+    .arrow-btn {
+      width: 74px;
+      height: 74px;
+      border-radius: 50%;
+      background: #fff;
+      color: #ff4f91;
+      font-size: 34px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+      animation: bounce 1.2s infinite;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .choices {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .choice-btn, .restart-btn {
+      width: 100%;
+      border-radius: 16px;
+      padding: 15px 18px;
+      font-size: 18px;
+      color: #fff;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.16);
+    }
+
+    .yes { background: #ff4f91; }
+    .no { background: #8b5cf6; }
+    .restart-btn { background: #ff4f91; margin-top: 18px; }
+
+    .choice-btn:hover, .restart-btn:hover, .arrow-btn:hover {
+      transform: scale(1.04);
+    }
+
+    .love-illustration {
+      margin: 18px auto 0;
+      width: 220px;
+      height: 220px;
+      position: relative;
+      display: grid;
+      place-items: center;
+    }
+
+    .love-heart {
+      width: 150px;
+      height: 150px;
+      background: #ff4f91;
+      position: relative;
+      transform: rotate(-45deg);
+      animation: pulse 1.3s infinite;
+      box-shadow: 0 12px 30px rgba(255,79,145,0.35);
+    }
+
+    .love-heart::before,
+    .love-heart::after {
+      content: "";
+      position: absolute;
+      width: 150px;
+      height: 150px;
+      background: #ff4f91;
+      border-radius: 50%;
+    }
+
+    .love-heart::before { top: -75px; left: 0; }
+    .love-heart::after { left: 75px; top: 0; }
+
+    .kiss {
+      position: absolute;
+      font-size: 64px;
+      z-index: 2;
+      transform: translate(10px, -4px);
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: rotate(-45deg) scale(1); }
+      50% { transform: rotate(-45deg) scale(1.08); }
+    }
+
+    .small-text {
+      margin-top: 14px;
+      font-size: 16px;
+      opacity: 0.95;
+    }
+
+    @media (max-width: 480px) {
+      .card { padding: 26px 18px; }
+      p { font-size: 17px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="hearts" id="hearts"></div>
+
+  <div class="card">
+    <div id="step1">
+      <div class="badge">💖 Mensaje especial 💖</div>
+      <h1>Te extraño mucho mi amor,<br>me haces falta 💘</h1>
+      <p>Escaneaste este QR y te envié un pedacito de mi corazón.</p>
+      <button class="arrow-btn" id="nextBtn" aria-label="Continuar">➜</button>
+      <div class="small-text">Toca la flechita</div>
+    </div>
+
+    <div id="step2" class="hidden">
+      <div class="badge">💕 Dime la verdad 💕</div>
+      <h2>¿Me extrañas o no me extrañas?</h2>
+      <div class="choices">
+        <button class="choice-btn yes" id="yesBtn">Sí, te extraño</button>
+        <button class="choice-btn no" id="noBtn">No me extrañas</button>
+      </div>
+    </div>
+
+    <div id="step3" class="hidden">
+      <div class="badge">😘 Para ti 😘</div>
+      <h2>Te envío un besito</h2>
+      <p>Con muchísimo amor para ti, mi vida.</p>
+      <div class="love-illustration">
+        <div class="love-heart"></div>
+        <div class="kiss">😘</div>
+      </div>
+    </div>
+
+    <div id="step4" class="hidden">
+      <div class="badge">💔 Ay no 💔</div>
+      <h2>Yo sí te extraño muchísimo</h2>
+      <p>Pero te mando amor igual, porque eres muy especial para mí.</p>
+      <button class="restart-btn" id="restartBtn">Volver a preguntar</button>
+    </div>
+  </div>
+
+  <script>
+    const heartsContainer = document.getElementById('hearts');
+    const heartSymbols = ['❤', '💖', '💕', '💗', '💘'];
+
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.className = 'heart';
+      heart.textContent = heartSymbols[Math.floor(Math.random() * heartSymbols.length)];
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.fontSize = (18 + Math.random() * 26) + 'px';
+      heart.style.animationDuration = (5 + Math.random() * 5) + 's';
+      heartsContainer.appendChild(heart);
+
+      setTimeout(() => heart.remove(), 11000);
+    }
+
+    setInterval(createHeart, 350);
+    for (let i = 0; i < 15; i++) setTimeout(createHeart, i * 150);
+
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const step3 = document.getElementById('step3');
+    const step4 = document.getElementById('step4');
+
+    document.getElementById('nextBtn').addEventListener('click', () => {
+      step1.classList.add('hidden');
+      step2.classList.remove('hidden');
+    });
+
+    document.getElementById('yesBtn').addEventListener('click', () => {
+      step2.classList.add('hidden');
+      step4.classList.add('hidden');
+      step3.classList.remove('hidden');
+    });
+
+    document.getElementById('noBtn').addEventListener('click', () => {
+      step2.classList.add('hidden');
+      step3.classList.add('hidden');
+      step4.classList.remove('hidden');
+    });
+
+    document.getElementById('restartBtn').addEventListener('click', () => {
+      step4.classList.add('hidden');
+      step2.classList.remove('hidden');
+    });
+  </script>
+</body>
+</html>
